@@ -1,25 +1,22 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 
-type Props = {
-  paths: string[];
-  built: string;
-};
-
 // build-time paths
 export const getStaticPaths: GetStaticPaths = async () => ({
-  paths: [
-    {
-      params: { paths: [""] },
-    },
-    { params: { paths: ["nested", "path"] } },
-  ],
+  paths: (process.env.PATHS ?? "").split(",").map((paths) => ({
+    params: { slug: paths.split("/") },
+  })),
   fallback: false,
 });
+
+type Props = {
+  slug: string[];
+  built: string;
+};
 
 export const getStaticProps: GetStaticProps<Props, Props> = async ({
   params,
 }) => ({
-  props: { paths: params?.paths ?? [], built: new Date().toString() },
+  props: { slug: params?.slug ?? [], built: new Date().toString() },
 });
 
 const Paths: React.FC<Props> = (props) => (
