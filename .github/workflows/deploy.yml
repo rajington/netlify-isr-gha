@@ -11,23 +11,29 @@ concurrency:
   group: "deploy"
   cancel-in-progress: false
 
+env:
+  NODE_VERSION: 18.15.0
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup Node
         uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Cache node_modules
         id: cache-node-modules
         uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ env.NODE_VERSION }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-              ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+              ${{ runner.os }}-${{ env.NODE_VERSION }}-nodemodules-
 
       - name: Install dependencies
         run: yarn --frozen-lockfile
@@ -43,8 +49,10 @@ jobs:
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
+
       - name: Build with Next.js
         run: yarn export
+
       - name: Deploy to Netlify
         run: yarn deploy
         env:
