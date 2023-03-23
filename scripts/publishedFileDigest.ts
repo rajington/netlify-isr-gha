@@ -15,4 +15,4 @@ const publishedFileDigest = async (TOKEN: string, SITE_ID: string) => {
   return fileDigest;
 }
 
-publishedFileDigest(process.env.NETLIFY_TOKEN!, process.env.NETLIFY_SITE_ID!).then(console.log);
+publishedFileDigest(process.env.NETLIFY_AUTH_TOKEN!, process.env.NETLIFY_SITE_ID!).then(console.log);
