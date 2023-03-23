@@ -4,7 +4,7 @@ Currently On-Demand ISR is not supported on the Next.js Runtime. We can emulate 
 
 If there are a lot of these files, we ask our CI to restore and then Netlify CLI to hash files that we know we have no intention of uploading.
 
-Instead, the CI could just cache only the previous deploys' file digest JSON (or re-request it using the undocumented API /api/v1/deploys/{deploy_id}/files), and enable the CLI deploy command to merge the digest of just the new files, with the previous digest.
+Instead, the CI could just cache only the previous deploys' file digest JSON (or re-request it using the undocumented API /api/v1/deploys/{deploy_id}/files), and [enable the CLI deploy command to merge the digest of just the new files, with the previous digest (CLI PR)](https://github.com/netlify/cli/pull/5589).
 
 This is a WIP and more of a PoC of a strategy that could enable performant incremental uploads with an external build system, which is likely not the direction Netlify hopes to pursue.
 
