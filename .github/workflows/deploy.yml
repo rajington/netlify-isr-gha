@@ -1,5 +1,5 @@
 name: Deploy
-run-name: ${{ inputs.paths && format('Deploy ${0}', inputs.paths) || github.event.head_commit.message }}
+run-name: ${{ inputs.paths && format('Deploy {0}', inputs.paths) || github.event.head_commit.message }}
 
 on:
   push:
@@ -61,20 +61,25 @@ jobs:
             ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
 
       - name: Build with Next.js
+        if: ${{ github.event_name == 'push' }}
         run: yarn export
-        env:
-          PATHS: ${{ inputs.paths }}
 
       - name: Deploy to Netlify
-        run: yarn deploy
         if: ${{ github.event_name == 'push' }}
+        run: yarn deploy
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
-      - name: Deploy to Netlify (incremental)
-        run: yarn deploy-incremental
+      - name: Build with Next.js (incremental)
         if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: yarn export
+        env:
+          PATHS: ${{ inputs.paths }}
+  
+      - name: Deploy to Netlify (incremental)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: yarn deploy-incremental
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
