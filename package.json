@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "deploy": "netlify deploy -d out --prod",
+    "deploy": "netlify deploy -d out --prod --site $NETLIFY_SITE_ID --auth $NETLIFY_TOKEN",
     "export-example": "PATHS='foo,bar,baz' yarn export",
     "export": "next build && next export",
     "published-file-digest": "ts-node scripts/publishedFileDigest",
