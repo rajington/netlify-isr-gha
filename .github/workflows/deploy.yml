@@ -3,6 +3,13 @@ name: Deploy
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      paths:
+        description: 'Comman separated paths to generate'
+        type: string
+        required: true
+        default: 'foo,bar,baz'
 
 permissions:
   contents: read
@@ -52,6 +59,8 @@ jobs:
 
       - name: Build with Next.js
         run: yarn export
+        env:
+          PATHS: ${{ inputs.paths }}
 
       - name: Deploy to Netlify
         run: yarn deploy
