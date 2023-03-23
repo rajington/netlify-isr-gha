@@ -52,13 +52,14 @@ jobs:
       - name: Restore Next.js cache
         uses: actions/cache@v3
         with:
-          path: |
-            .next/cache
+          path: .next/cache
           # Generate a new cache whenever packages or source files change.
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
           # If source files changed but packages didn't, rebuild from a prior cache.
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
+
+      ## Do a normal build/deploy if it's a push event
 
       - name: Build with Next.js
         if: ${{ github.event_name == 'push' }}
@@ -70,6 +71,8 @@ jobs:
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+      ## Do an incremental build/deploy if it's a workflow dispatch
 
       - name: Build with Next.js (incremental)
         if: ${{ github.event_name == 'workflow_dispatch' }}

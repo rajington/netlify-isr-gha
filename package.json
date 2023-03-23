@@ -5,8 +5,8 @@
   "scripts": {
     "deploy": "netlify deploy -d out --prod --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN",
     "deploy-incremental": "yarn deploy --existing-file-digest `yarn -s published-file-digest`",
-    "export-example": "PATHS='foo,bar,baz' yarn export",
     "export": "next build && next export",
+    "export-example": "PATHS='foo,bar,baz' yarn export",
     "published-file-digest": "ts-node scripts/publishedFileDigest",
     "serve": "serve out"
   },

@@ -1,6 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 
-// build-time paths
+// pass the path slugs to the pages
 export const getStaticPaths: GetStaticPaths = async () => ({
   paths: getPaths().map((paths) => ({
     params: { slug: paths.split("/") },
@@ -8,7 +8,7 @@ export const getStaticPaths: GetStaticPaths = async () => ({
   fallback: false,
 });
 
-// get the paths from environment variable or generate page0..pageN
+// get the paths from environment variable or generate 5 pages by default
 const getPaths = () =>
   process.env.PATHS?.split(",") ??
   Array(5)
@@ -20,6 +20,7 @@ type Props = {
   built: string;
 };
 
+// preload the pages with some information
 export const getStaticProps: GetStaticProps<Props, Props> = async ({
   params,
 }) => ({
@@ -30,6 +31,7 @@ export const getStaticProps: GetStaticProps<Props, Props> = async ({
   },
 });
 
+// simply output the props JSON
 const Paths: React.FC<Props> = (props) => (
   <pre>{JSON.stringify(props, null, 2)}</pre>
 );
