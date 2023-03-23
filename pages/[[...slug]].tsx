@@ -11,7 +11,7 @@ export const getStaticPaths: GetStaticPaths = async () => ({
 // get the paths from environment variable or generate page0..pageN
 const getPaths = () =>
   process.env.PATHS?.split(",") ??
-  Array(100)
+  Array(5)
     .fill("page")
     .map((page, i) => page + i);
 
