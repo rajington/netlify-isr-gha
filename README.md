@@ -1,38 +1,37 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Example Simulating On-Demand ISR on Netlify with GitHub Actions
 
-## Getting Started
+Currently On-Demand ISR is not supported on the Next.js Runtime. We can emulate this capability with external CI and the Netlify CLI by simply redoing the deploy with the changed files, plus all the previous deploys' files. The Netlify CLI hashes all these files, and the Netlify API will reply that only the changed files need to be uploaded.
 
-First, run the development server:
+If there are a lot of these files, we ask our CI to restore and then Netlify CLI to hash files that we know we have no intention of uploading.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+Instead, the CI could just cache only the previous deploys' file digest JSON (or re-request it using the undocumented API /api/v1/deploys/{deploy_id}/files), and enable the CLI deploy command to merge the digest of just the new files, with the previous digest.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This is a WIP and more of a PoC of a strategy that could enable performant incremental uploads with an external build system, which is likely not the direction Netlify hopes to pursue.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+By default, on every push (code change) the site builds the following pages:
+- https://netlify-isr-gha-site.netlify.app/page0
+- https://netlify-isr-gha-site.netlify.app/page1
+- https://netlify-isr-gha-site.netlify.app/page2
+- https://netlify-isr-gha-site.netlify.app/page1
+- https://netlify-isr-gha-site.netlify.app/page4
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Each page shows the commit hash, build time, and page-specific slug.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Manually running the workflow simulates an external webhook that includes which pages to "On-Demand" Regenerate (or generate if it doesn't exist).
 
-## Learn More
+When manually running the workflow, for example, with `page1,page3` we can see that [the workflow run](https://github.com/rajington/netlify-isr-gha/actions/runs/4502043419/jobs/7923309282) only builds these two pages, and only deploys those two pages, yet the previous pages are still available:
+- https://netlify-isr-gha-site.netlify.app/page0 (previous)
+- https://netlify-isr-gha-site.netlify.app/page1 (updated)
+- https://netlify-isr-gha-site.netlify.app/page2 (previous)
+- https://netlify-isr-gha-site.netlify.app/page1 (updated)
+- https://netlify-isr-gha-site.netlify.app/page4 (previous)
 
-To learn more about Next.js, take a look at the following resources:
+## Demo
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+https://user-images.githubusercontent.com/53535/227255461-a83d08ea-7ee9-443c-8069-919f20246a8c.mov
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
