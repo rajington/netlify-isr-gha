@@ -23,7 +23,11 @@ type Props = {
 export const getStaticProps: GetStaticProps<Props, Props> = async ({
   params,
 }) => ({
-  props: { slug: params?.slug ?? [], built: new Date().toString() },
+  props: {
+    commit: await require("next-build-id")({ dir: __dirname }), // changes every commit
+    built: new Date().toString(), // changes every rebuild
+    slug: params?.slug ?? [], // never changes
+  },
 });
 
 const Paths: React.FC<Props> = (props) => (
