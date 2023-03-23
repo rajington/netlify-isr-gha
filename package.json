@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "export": "next build && next export",
-    "incremental-deploy": "ts-node incrementalDeploy",
+    "published-file-digest": "ts-node scripts/publishedFileDigest",
     "serve": "serve out"
   },
   "dependencies": {
@@ -12,7 +12,11 @@
     "@types/node": "18.13.0",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
+    "netlify": "^13.1.2",
+    "netlify-cli": "rajington/cli",
     "next": "13.1.6",
+    "next-build-id": "^3.0.0",
+    "node-fetch": "^3.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "serve": "^14.2.0",
