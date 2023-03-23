@@ -1,5 +1,5 @@
 name: Deploy
-run-name: Deploy `${{ inputs.paths || github.event.head_commit.message }}`
+run-name: ${{ inputs.paths && format('Deploy ${0}', inputs.paths) || github.event.head_commit.message }}
 
 on:
   push:
